@@ -34,7 +34,7 @@ function App() {
     });
 
     try {
-      const response = await fetch('http://localhost:5000/process-image', {
+      const response = await fetch('http://localhost:8080/process-image', {
         method: 'POST',
         body: formData,
       });
