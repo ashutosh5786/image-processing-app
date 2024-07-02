@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import './App.css';
-import ImageUpload from './ImageUpload';
-import ImageOptions from './ImageOptions';
+import ImageUpload from './ImageUpload'; // Ensure you have this component created
+import ImageOptions from './ImageOptions'; // Ensure you have this component created
 
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [processedImage, setProcessedImage] = useState(null);
   const [options, setOptions] = useState({
     grayscale: false,
-    resize: '',
-    sharpen: false,
-    sepia: false
+    rotate: false,
+    sepia: false,
+    edgeDetection: false,
+    gaussianBlur: false
   });
-  const [processedImage, setProcessedImage] = useState(null);
 
   const handleImageSelect = (image) => {
     setSelectedImage(image);
+    if (processedImage) {
+      URL.revokeObjectURL(processedImage);
+      setProcessedImage(null);
+    }
   };
 
   const handleOptionsChange = (name, value) => {
@@ -28,9 +33,7 @@ function App() {
     const formData = new FormData();
     formData.append('image', selectedImage);
     Object.keys(options).forEach(key => {
-      if (options[key]) {
-        formData.append(key, options[key]);
-      }
+      formData.append(key, options[key]);
     });
 
     try {
@@ -38,20 +41,18 @@ function App() {
         method: 'POST',
         body: formData,
       });
-      const result = await response.blob(); // Assuming the server sends back a processed image blob
-      setProcessedImage(URL.createObjectURL(result));
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result = await response.blob();
+      const imageObjectURL = URL.createObjectURL(result);
+      if (processedImage) {
+        URL.revokeObjectURL(processedImage);
+      }
+      setProcessedImage(imageObjectURL);
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Failed to fetch:', error);
     }
-  };
-
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = 'processed-image.png'; // You might want to dynamically generate a name based on processing options
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   return (
@@ -63,8 +64,7 @@ function App() {
         {selectedImage && <button onClick={handleSubmit}>Process Image</button>}
         {processedImage && <div>
           <h2>Processed Image:</h2>
-          <img src={processedImage} alt="Processed" />
-          <button onClick={handleDownload}>Download Image</button>
+          <img key={processedImage} src={processedImage} alt="Processed" />
         </div>}
       </header>
     </div>

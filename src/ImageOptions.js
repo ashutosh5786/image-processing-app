@@ -2,8 +2,8 @@ import React from "react";
 
 function ImageOptions({ onOptionsChange }) {
   const handleChange = (event) => {
-    const { name, value, checked, type } = event.target;
-    onOptionsChange(name, type === "checkbox" ? checked : value);
+    const { name, checked } = event.target;
+    onOptionsChange(name, checked);
   };
 
   return (
@@ -17,25 +17,26 @@ function ImageOptions({ onOptionsChange }) {
       </div>
       <div>
         <label>
-          Resize:
-          <select name="resize" onChange={handleChange}>
-            <option value="">Select</option>
-            <option value="640x480">640x480</option>
-            <option value="800x600">800x600</option>
-            <option value="1024x768">1024x768</option>
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          <input type="checkbox" name="sharpen" onChange={handleChange} />
-          Sharpen
+          <input type="checkbox" name="rotate" onChange={handleChange} />
+          Rotate 90°
         </label>
       </div>
       <div>
         <label>
           <input type="checkbox" name="sepia" onChange={handleChange} />
           Apply Sepia Filter
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" name="edgeDetection" onChange={handleChange} />
+          Edge Detection
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" name="gaussianBlur" onChange={handleChange} />
+          Gaussian Blur
         </label>
       </div>
     </div>

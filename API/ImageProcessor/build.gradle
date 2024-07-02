@@ -30,9 +30,13 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
 
     // imgscalr-lib for image processing
     implementation 'org.imgscalr:imgscalr-lib:4.2'
+
+    // OpenCV for advanced image processing
+    implementation 'org.openpnp:opencv:4.5.1-2'
 
 }
 
