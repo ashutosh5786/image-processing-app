@@ -17,8 +17,8 @@ jobs:
 
       - name: Commit and push to SVN
         run: |
-          svn checkout https://campus.cs.le.ac.uk/svn/as1523/code/branches/master svn_temp
-          cd svn_temp
+          svn checkout https://campus.cs.le.ac.uk/svn/as1523/code/branches/master
+          cd master
           # Copy changed files from GitHub repository to SVN checkout
           cp -R ../${GITHUB_REPOSITORY##*/}/* .
           svn add --force .  # Add any new files
