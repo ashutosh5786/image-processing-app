@@ -65,7 +65,7 @@ public class ImageProcessingController {
     }
 
     private BufferedImage applySepiaFilter(BufferedImage img) {
-        // Apply sepia logic here 
+        // Apply sepia logic here
         return img;
     }
 
