@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -112,14 +114,39 @@ public class ImageProcessingController {
             }
         }
 
-        return newImg;}
+        return newImg;
+    }
 
     private Mat bufferedImageToMat(BufferedImage bi) {
-        Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
-        byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
-        mat.put(0, 0, data);
+        Mat mat;
+
+        switch (bi.getType()) {
+            case BufferedImage.TYPE_3BYTE_BGR:
+                // Handle BufferedImage with byte data (e.g., TYPE_3BYTE_BGR)
+                byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+                mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+                mat.put(0, 0, data);
+                break;
+            case BufferedImage.TYPE_INT_RGB:
+                // Handle BufferedImage with int data (e.g., TYPE_INT_RGB)
+                int[] intData = ((DataBufferInt) bi.getRaster().getDataBuffer()).getData();
+                byte[] bytes = new byte[intData.length * 3]; // 3 bytes per pixel (RGB)
+                for (int i = 0; i < intData.length; i++) {
+                    bytes[i * 3 + 0] = (byte) ((intData[i] >> 16) & 0xFF); // R
+                    bytes[i * 3 + 1] = (byte) ((intData[i] >> 8) & 0xFF);  // G
+                    bytes[i * 3 + 2] = (byte) (intData[i] & 0xFF);         // B
+                }
+                mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+                mat.put(0, 0, bytes);
+                break;
+            // Add cases for other BufferedImage types as needed
+            default:
+                throw new IllegalArgumentException("Unsupported BufferedImage type: " + bi.getType());
+        }
+
         return mat;
     }
+
 
     private BufferedImage matToBufferedImage(Mat matrix) {
         int type = BufferedImage.TYPE_BYTE_GRAY;
