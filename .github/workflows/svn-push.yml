@@ -1,0 +1,32 @@
+name: SVN Push
+
+on:
+  push:
+    branches:
+      - main # Adjust this to your main branch name
+
+jobs:
+  svn_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install SVN
+        run: sudo apt-get install subversion # Install SVN client if not available
+
+      - name: Commit and push to SVN
+        run: |
+          svn checkout https://campus.cs.le.ac.uk/svn/as1523/code/branches/master svn_temp
+          cd svn_temp
+          # Copy changed files from GitHub repository to SVN checkout
+          cp -R ../${GITHUB_REPOSITORY##*/}/* .
+          svn add --force .  # Add any new files
+          svn commit -m "GitHub commit: ${GITHUB_SHA}" --username as1523 --password ${{ secrets.svn_password }}
+          cd ..
+          rm -rf svn_temp  # Clean up SVN checkout
+
+    #   - name: Push changes back to GitHub
+    #     uses: ad-m/github-push-action@master
+    #     with:
+    #       github_token: ${{ secrets.GITHUB_TOKEN }}
