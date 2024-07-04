@@ -1,4 +1,6 @@
 import React from "react";
+// import "../App.css";
+// import "../index.css";
 
 function ImageOptions({ onOptionsChange }) {
   const handleChange = (event) => {

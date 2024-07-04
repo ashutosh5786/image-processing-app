@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+// import "../App.css";
+// import "../index.css";
 
 function ImageUpload({ onImageSelect }) {
   const [image, setImage] = useState(null);

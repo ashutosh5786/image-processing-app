@@ -6,8 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
-import ImageUpload from "./components/ImageUpload";
-import ImageOptions from "./components/ImageOptions";
+import ImageUpload from "./ImageUpload";
+import ImageOptions from "./ImageOptions";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
@@ -51,7 +51,7 @@ function App() {
         body: formData,
       });
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Failed to process image. Please try again later.");
       }
       const result = await response.blob();
       const imageObjectURL = URL.createObjectURL(result);
