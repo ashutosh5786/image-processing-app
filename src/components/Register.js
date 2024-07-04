@@ -8,13 +8,14 @@ const Register = ({ history }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:4000/auth/register", {
-        username,
-        password,
-      });
+      await axios.post(
+        "http://localhost:4000/auth/register",
+        { username, password },
+        { withCredentials: true }
+      );
       history.push("/login");
     } catch (err) {
-      console.error("Registration failed");
+      console.error("Registration failed", err);
     }
   };
 

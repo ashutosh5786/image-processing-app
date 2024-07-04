@@ -1,20 +1,18 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login = ({ history }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:4000/auth/login", {
-        username,
-        password,
-      });
-      history.push("/dashboard");
+      const response = await axios.post('http://localhost:4000/auth/login', { username, password });
+      localStorage.setItem('authToken', response.data.token);
+      history.push('/dashboard');
     } catch (err) {
-      console.error("Login failed");
+      console.error('Login failed', err);
     }
   };
 

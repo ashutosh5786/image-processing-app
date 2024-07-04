@@ -6,12 +6,22 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   const { username, password } = req.body;
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ message: "Username and password are required" });
+  }
   try {
     const user = new User({ username, password });
     await user.save();
-    res.redirect("/login");
+    res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(400).send("Error creating user");
+    if (err.code === 11000) {
+      // Duplicate username
+      res.status(400).json({ message: "Username already exists" });
+    } else {
+      res.status(500).json({ message: "Server error" });
+    }
   }
 });
 
