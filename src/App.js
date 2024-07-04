@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
-  Redirect,
-  Switch,
+  Routes,
+  Navigate,
 } from "react-router-dom";
 import "./App.css";
 import ImageUpload from "./components/ImageUpload";
@@ -72,22 +72,16 @@ function App() {
 
   return (
     <Router>
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
-          render={(props) =>
-            isAuthenticated() ? (
-              <Dashboard {...props} />
-            ) : (
-              <Redirect to="/login" />
-            )
-          }
+          element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />}
         />
         <Route
           path="/image-upload"
-          render={(props) =>
+          element={
             isAuthenticated() ? (
               <div>
                 <ImageUpload onImageSelect={handleImageSelect} />
@@ -107,12 +101,12 @@ function App() {
                 )}
               </div>
             ) : (
-              <Redirect to="/login" />
+              <Navigate to="/login" />
             )
           }
         />
-        <Route exact path="/" render={() => <Redirect to="/login" />} />
-      </Switch>
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
     </Router>
   );
 }
