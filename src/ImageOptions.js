@@ -9,7 +9,7 @@ function ImageOptions({ onOptionsChange }) {
   };
 
   return (
-    <div>
+    <div className="image-options">
       <h3>Image Processing Options</h3>
       <div>
         <label>

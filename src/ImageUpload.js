@@ -14,7 +14,7 @@ function ImageUpload({ onImageSelect }) {
   };
 
   return (
-    <div>
+    <div className="image-upload">
       <input type="file" accept="image/*" onChange={handleImageChange} />
       {image && (
         <img

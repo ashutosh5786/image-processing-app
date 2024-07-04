@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.image-upload {
+  margin: 20px 0;
+}
+
+.image-options {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+.image-options label {
+  margin: 5px 0;
+}

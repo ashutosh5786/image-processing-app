@@ -5,7 +5,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import "./App.css";
+import './App.css';
 import ImageUpload from "./ImageUpload";
 import ImageOptions from "./ImageOptions";
 import Login from "./components/Login";
@@ -20,7 +20,7 @@ function App() {
     rotate: false,
     sepia: false,
     edgeDetection: false,
-    gaussianBlur: false,
+    gaussianBlur: false
   });
 
   const handleImageSelect = (image) => {
@@ -76,14 +76,12 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
-          path="/dashboard"
-          element={isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />}
-        />
-        <Route
           path="/image-upload"
           element={
             isAuthenticated() ? (
-              <div>
+              <div className="App">
+                <header className="App-header">
+                  <h1>Image Processing App</h1>
                 <ImageUpload onImageSelect={handleImageSelect} />
                 <ImageOptions onOptionsChange={handleOptionsChange} />
                 {selectedImage && (
@@ -99,6 +97,7 @@ function App() {
                     />
                   </div>
                 )}
+                </header>
               </div>
             ) : (
               <Navigate to="/login" />
