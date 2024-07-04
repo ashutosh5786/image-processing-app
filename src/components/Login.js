@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ history }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Use useNavigate hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:4000/auth/login', { username, password });
       localStorage.setItem('authToken', response.data.token);
-      history.push('/dashboard');
+      navigate('/image-upload');
     } catch (err) {
       console.error('Login failed', err);
     }

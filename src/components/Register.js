@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const Register = ({ history }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Use useNavigate hook
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,7 +16,7 @@ const Register = ({ history }) => {
         { username, password },
         { withCredentials: true }
       );
-      history.push("/login");
+      navigate("/login");
     } catch (err) {
       console.error("Registration failed", err);
     }
