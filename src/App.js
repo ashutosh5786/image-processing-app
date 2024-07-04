@@ -5,12 +5,11 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import './App.css';
+import "./App.css";
 import ImageUpload from "./ImageUpload";
 import ImageOptions from "./ImageOptions";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Dashboard from "./components/Dashboard";
 
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -20,7 +19,7 @@ function App() {
     rotate: false,
     sepia: false,
     edgeDetection: false,
-    gaussianBlur: false
+    gaussianBlur: false,
   });
 
   const handleImageSelect = (image) => {
@@ -82,21 +81,21 @@ function App() {
               <div className="App">
                 <header className="App-header">
                   <h1>Image Processing App</h1>
-                <ImageUpload onImageSelect={handleImageSelect} />
-                <ImageOptions onOptionsChange={handleOptionsChange} />
-                {selectedImage && (
-                  <button onClick={handleSubmit}>Process Image</button>
-                )}
-                {processedImage && (
-                  <div>
-                    <h2>Processed Image:</h2>
-                    <img
-                      key={processedImage}
-                      src={`${processedImage}?${new Date().getTime()}`}
-                      alt="Processed"
-                    />
-                  </div>
-                )}
+                  <ImageUpload onImageSelect={handleImageSelect} />
+                  <ImageOptions onOptionsChange={handleOptionsChange} />
+                  {selectedImage && (
+                    <button onClick={handleSubmit}>Process Image</button>
+                  )}
+                  {processedImage && (
+                    <div>
+                      <h2>Processed Image:</h2>
+                      <img
+                        key={processedImage}
+                        src={processedImage}
+                        alt="Processed"
+                      />
+                    </div>
+                  )}
                 </header>
               </div>
             ) : (
