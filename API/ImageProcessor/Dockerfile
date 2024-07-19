@@ -1,4 +1,12 @@
-FROM ubuntu:latest
-LABEL authors="ashut"
+# Build stage
+FROM gradle:8.8-jdk21 AS build
+WORKDIR /home/gradle/src
+COPY --chown=gradle:gradle . /home/gradle/src
+RUN gradle build --no-daemon
 
-ENTRYPOINT ["top", "-b"]
+# Run stage
+FROM openjdk:21-jre-slim
+EXPOSE 8080
+RUN mkdir /app
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
+ENTRYPOINT ["java", "-jar", "/app/spring-boot-application.jar"]
