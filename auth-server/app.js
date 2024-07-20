@@ -28,6 +28,11 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      secure: false, // Set to true if using https
+      maxAge: 3600000 // 1 hour
+    }
   })
 );
 app.use(passport.initialize());

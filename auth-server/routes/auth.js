@@ -25,18 +25,34 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/dashboard",
-    failureRedirect: "/login",
-    failureFlash: true,
-  })
-);
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error during authentication', err });
+    }
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid username or password' });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error during login', err });
+      }
+      return res.status(200).json({ message: 'Login successful', user });
+    });
+  })(req, res, next);
+});
 
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/login");
+});
+
+router.get('/check-auth', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.status(200).json({ message: 'Authenticated', user: req.user });
+  } else {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
 });
 
 module.exports = router;
