@@ -16,7 +16,7 @@ mongoose.connect(
 
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your React app's URL
+  origin: '*', // Replace with your React app's URL
   credentials: true // Enable credentials (cookies, authorization headers, etc.)
 }));
 app.use(bodyParser.json()); // Add this line to parse JSON request bodies

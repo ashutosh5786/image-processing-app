@@ -45,7 +45,7 @@ function App() {
     });
 
     try {
-      const response = await fetch("http://api.ashutosh.systems/process-image", {
+      const response = await fetch("https://ashutosh.systems/process-image", {
         method: "POST",
         body: formData,
       });
