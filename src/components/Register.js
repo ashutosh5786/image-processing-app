@@ -13,7 +13,7 @@ const Register = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:4000/auth/register",
+        "https://api.ashutosh.systems/auth/register",
         { username, password },
         { withCredentials: true }
       );

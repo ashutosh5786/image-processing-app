@@ -10,7 +10,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/auth/login', { username, password });
+      const response = await axios.post('https://api.ashutosh.systems/auth/login', { username, password });
       localStorage.setItem('authToken', response.data.token);
       navigate('/image-upload');
     } catch (err) {
