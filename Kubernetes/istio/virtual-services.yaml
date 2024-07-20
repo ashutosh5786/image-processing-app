@@ -1,0 +1,118 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-api-virtual-service
+spec:
+  hosts:
+    - "api.ashutosh.systems"
+  gateways:
+    - imageprocessing-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /auth
+      route:
+        - destination:
+            host: auth-service
+            port:
+              number: 4000
+      corsPolicy:
+        allowOrigins:
+          - regex: "https://.*" # Adjust this as needed
+        allowMethods:
+          - POST
+          - GET
+          - OPTIONS
+        allowHeaders:
+          - content-type
+          - authorization
+        allowCredentials: true
+        maxAge: "24h"
+    - match:
+        - uri:
+            prefix: /dashboard
+      route:
+        - destination:
+            host: auth-service
+            port:
+              number: 4000
+      corsPolicy:
+        allowOrigins:
+          - regex: "https://.*" # Adjust this as needed
+        allowMethods:
+          - GET
+          - OPTIONS
+        allowHeaders:
+          - content-type
+          - authorization
+        allowCredentials: true
+        maxAge: "24h"
+    - match:
+        - uri:
+            prefix: /process-image
+      route:
+        - destination:
+            host: image-processing-service
+            port:
+              number: 8080
+      corsPolicy:
+        allowOrigins:
+          - regex: "https://.*" # Adjust this as needed
+        allowMethods:
+          - POST
+          - OPTIONS
+        allowHeaders:
+          - content-type
+          - authorization
+        allowCredentials: true
+        maxAge: "24h"
+    - match:
+        - uri:
+            prefix: /image-upload
+      route:
+        - destination:
+            host: image-processing-service
+            port:
+              number: 8080
+      corsPolicy:
+        allowOrigins:
+          - regex: "https://.*" # Adjust this as needed
+        allowMethods:
+          - POST
+          - OPTIONS
+        allowHeaders:
+          - content-type
+          - authorization
+        allowCredentials: true
+        maxAge: "24h"
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-frontend-virtual-service
+spec:
+  hosts:
+    - "ashutosh.systems"
+  gateways:
+    - imageprocessing-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: react-frontend-service
+            port:
+              number: 80
+      corsPolicy:
+        allowOrigins:
+          - regex: "https://.*" # Adjust this as needed
+        allowMethods:
+          - GET
+          - OPTIONS
+        allowHeaders:
+          - content-type
+          - authorization
+        allowCredentials: true
+        maxAge: "24h"

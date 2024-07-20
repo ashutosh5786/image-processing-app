@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: add-cors
+  namespace: default  # replace with your namespace
+spec:
+  workloadSelector:
+    labels:
+      app: your-app-label  # replace with your app label
+  configPatches:
+    - applyTo: VIRTUAL_HOST
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: "api.ashutosh.systems:80"
+      patch:
+        operation: MERGE
+        value:
+          typed_per_filter_config:
+            envoy.filters.http.cors:
+              "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.CorsPolicy
+              allow_origin_string_match:
+                - prefix: "*"
+              allow_methods: "GET, POST, OPTIONS"
+              allow_headers: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+              max_age: "86400"
+              expose_headers: "X-Custom-Header"
+              allow_credentials: true
