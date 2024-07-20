@@ -40,17 +40,9 @@ app.use("/auth", authRoutes);
 
 app.get("/dashboard", (req, res) => {
   if (!req.isAuthenticated()) {
-    return res.redirect("/login");
+    return res.send("Not Authenticated");
   }
   res.send("Welcome to Dashboard");
-});
-
-app.get("/login", (req, res) => {
-  res.send("Login Page");
-});
-
-app.get("/register", (req, res) => {
-  res.send("Register Page");
 });
 
 app.listen(4000, "0.0.0.0",() => {
