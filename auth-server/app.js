@@ -53,6 +53,6 @@ app.get("/register", (req, res) => {
   res.send("Register Page");
 });
 
-app.listen(4000, () => {
+app.listen(4000, "0.0.0.0",() => {
   console.log("Auth server started on port 4000");
 });
