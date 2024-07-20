@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -10,6 +10,7 @@ import ImageUpload from "./ImageUpload";
 import ImageOptions from "./ImageOptions";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import axios from "axios";
 
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -21,6 +22,20 @@ function App() {
     edgeDetection: false,
     gaussianBlur: false,
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get('https://api.ashutosh.systems/auth/check-auth', { withCredentials: true });
+        setIsAuthenticated(response.data.message === 'Authenticated');
+      } catch (error) {
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const handleImageSelect = (image) => {
     setSelectedImage(image);
@@ -45,9 +60,10 @@ function App() {
     });
 
     try {
-      const response = await fetch("https://ashutosh.systems/process-image", {
+      const response = await fetch("https://api.ashutosh.systems/process-image", {
         method: "POST",
         body: formData,
+        credentials: 'include', // Include cookies in the request
       });
       if (!response.ok) {
         throw new Error("Failed to process image. Please try again later.");
@@ -63,21 +79,15 @@ function App() {
     }
   };
 
-  const isAuthenticated = () => {
-    // Logic to check if the user is authenticated
-    // This can be from a global state or checking a token in localStorage
-    return !!localStorage.getItem("authToken");
-  };
-
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/image-upload"
           element={
-            isAuthenticated() ? (
+            isAuthenticated ? (
               <div className="App">
                 <header className="App-header">
                   <h1>Image Processing App</h1>

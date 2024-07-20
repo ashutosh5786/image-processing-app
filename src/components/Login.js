@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
-const Login = () => {
+import axios from 'axios';
+import './Login.css'; // Import the CSS for Login
+
+const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Use useNavigate hook
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://ashutosh.systems/auth/login', { username, password });
-      localStorage.setItem('authToken', response.data.token);
+      const response = await axios.post('https://api.ashutosh.systems/auth/login', 
+        { username, password }, 
+        { withCredentials: true }
+      );
+      setIsAuthenticated(true);
       navigate('/image-upload');
     } catch (err) {
       console.error('Login failed', err);
@@ -20,8 +24,8 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
       <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Login</h2>
         <input
           type="text"
           value={username}
