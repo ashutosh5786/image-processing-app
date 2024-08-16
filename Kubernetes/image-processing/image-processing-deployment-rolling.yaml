@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-processing-deployment
+  labels:
+    app: image-processing-service
+    version: v1
+  annotations:
+    description: "Deployment for image processing service"
+    contact: "team@example.com"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: image-processing-service
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: image-processing-service
+        version: v1
+      annotations:
+        commit: "a1b2c3d4"
+    spec:
+      containers:
+        - name: image-processing-container
+          image: 153676591437.dkr.ecr.eu-west-2.amazonaws.com/image-processing:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-processing-service
+spec:
+  selector:
+    app: image-processing-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http

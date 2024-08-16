@@ -7,3 +7,5 @@ resources:
   - ./Frontend/react-frontend-deployment.yaml
   - ./istio/virtual-services.yaml
   - ./istio/gateway.yaml
+  - ./istio/kiali-vs.yaml
+

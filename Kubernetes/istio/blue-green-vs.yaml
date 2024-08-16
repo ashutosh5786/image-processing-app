@@ -1,4 +1,3 @@
-# VirtualService for API
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -53,9 +52,15 @@ spec:
             prefix: /process-image
       route:
         - destination:
-            host: image-processing-service
+            host: image-processing-service-blue # traffic will go to this to image-processing-service-blue if weight is 100
             port:
               number: 8080
+          weight: 100
+        - destination:
+            host: image-processing-service-green # Traffic will not go to this to image-processing-service-green if weight is 0
+            port:
+              number: 8080
+          weight: 0
       corsPolicy:
         allowOrigins:
           - regex: "https://.*"
@@ -80,38 +85,6 @@ spec:
           - regex: "https://.*"
         allowMethods:
           - POST
-          - OPTIONS
-        allowHeaders:
-          - content-type
-          - authorization
-        allowCredentials: true
-        maxAge: "24h"
-
----
-# VirtualService for Frontend
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: app-frontend-virtual-service
-spec:
-  hosts:
-    - "ashutosh.systems"
-  gateways:
-    - imageprocessing-gateway
-  http:
-    - match:
-        - uri:
-            prefix: /
-      route:
-        - destination:
-            host: react-frontend-service
-            port:
-              number: 80
-      corsPolicy:
-        allowOrigins:
-          - regex: "https://.*"
-        allowMethods:
-          - GET
           - OPTIONS
         allowHeaders:
           - content-type

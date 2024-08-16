@@ -1,14 +1,36 @@
-# VirtualService for API
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: app-api-virtual-service
+  name: image-processing-virtual-service
 spec:
   hosts:
     - "api.ashutosh.systems"
   gateways:
     - imageprocessing-gateway
   http:
+    - match:
+        - uri:
+            prefix: /process-image
+      route:
+        - destination:
+            host: image-processing-service-prod
+            port:
+              number: 8080
+      mirror: # This line is used to implement the shadow deployment as mirror deployments
+        host: image-processing-service-shadow
+        port:
+          number: 8080
+      corsPolicy:
+        allowOrigins:
+          - regex: "https://.*"
+        allowMethods:
+          - POST
+          - OPTIONS
+        allowHeaders:
+          - content-type
+          - authorization
+        allowCredentials: true
+        maxAge: "24h"
     - match:
         - uri:
             prefix: /auth
@@ -50,25 +72,6 @@ spec:
         maxAge: "24h"
     - match:
         - uri:
-            prefix: /process-image
-      route:
-        - destination:
-            host: image-processing-service
-            port:
-              number: 8080
-      corsPolicy:
-        allowOrigins:
-          - regex: "https://.*"
-        allowMethods:
-          - POST
-          - OPTIONS
-        allowHeaders:
-          - content-type
-          - authorization
-        allowCredentials: true
-        maxAge: "24h"
-    - match:
-        - uri:
             prefix: /image-upload
       route:
         - destination:
@@ -86,35 +89,5 @@ spec:
           - authorization
         allowCredentials: true
         maxAge: "24h"
-
 ---
-# VirtualService for Frontend
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: app-frontend-virtual-service
-spec:
-  hosts:
-    - "ashutosh.systems"
-  gateways:
-    - imageprocessing-gateway
-  http:
-    - match:
-        - uri:
-            prefix: /
-      route:
-        - destination:
-            host: react-frontend-service
-            port:
-              number: 80
-      corsPolicy:
-        allowOrigins:
-          - regex: "https://.*"
-        allowMethods:
-          - GET
-          - OPTIONS
-        allowHeaders:
-          - content-type
-          - authorization
-        allowCredentials: true
-        maxAge: "24h"
+

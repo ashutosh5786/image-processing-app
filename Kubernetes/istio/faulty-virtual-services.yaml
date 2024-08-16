@@ -1,4 +1,4 @@
-# VirtualService for API
+# VirtualService for API with fault injection for auth-service
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -12,6 +12,15 @@ spec:
     - match:
         - uri:
             prefix: /auth
+      fault:
+        delay:
+          percentage:
+            value: 10.0 # 10% of the requests will be delayed
+          fixedDelay: 5s # 5 seconds delay
+        abort:
+          percentage:
+            value: 5.0 # 5% of the requests will be aborted
+          httpStatus: 500 # HTTP 500 Internal Server Error
       route:
         - destination:
             host: auth-service
@@ -32,6 +41,15 @@ spec:
     - match:
         - uri:
             prefix: /dashboard
+      fault:
+        delay:
+          percentage:
+            value: 10.0 # 10% of the requests will be delayed
+          fixedDelay: 5s # 5 seconds delay
+        abort:
+          percentage:
+            value: 5.0 # 5% of the requests will be aborted
+          httpStatus: 500 # HTTP 500 Internal Server Error
       route:
         - destination:
             host: auth-service

@@ -1,24 +1,25 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './Login.css'; // Import the CSS for Login
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./Login.css"; // Import the CSS for Login
 
 const Login = ({ setIsAuthenticated }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://api.ashutosh.systems/auth/login', 
-        { username, password }, 
+      const response = await axios.post(
+        "http://localhost:8080/auth/login",
+        { username, password },
         { withCredentials: true }
       );
       setIsAuthenticated(true);
-      navigate('/image-upload');
+      navigate("/image-upload");
     } catch (err) {
-      console.error('Login failed', err);
+      console.error("Login failed", err);
     }
   };
 
