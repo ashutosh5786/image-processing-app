@@ -1,0 +1,50 @@
+name: Continuous_Delivery_Dev
+
+on:
+  workflow_run:
+    workflows:
+      - Continuous_Integration
+    branches: [master]
+    types:
+      - completed
+jobs:
+  deploy:
+    name: Continuous_Delivery_Dev
+    runs-on: ubuntu-20.04
+
+    env:
+      HASH: $(git rev-parse --short "$GITHUB_SHA")
+      GITHUB_SHA: $GITHUB_SHA
+      BRANCH: ${GITHUB_REF##*/}
+      CD_ORG: Sponsorlytix-Ltd
+      DEV_REPO: crawler-backend
+      CD_CHART_REPO: DevOps-EKS
+      CD_MANIFEST_FILE_DEV: values.yaml
+      CD_IMAGE_TAG: image.tag
+      CHART_FILE: Chart.yaml
+      CHART_VERSION: "dependencies[0].version"
+      APP_VERSION: "dependencies[0].appVersion"
+
+    steps:
+      - if: github.event.workflow_run.conclusion != 'success'
+        name: Abort if Continuous Integration failed
+        run: |
+          echo "Continuous Integration failed"
+          exit 1
+
+      - name: Check out Deployment repository
+        run: |
+          git clone --single-branch --branch master https://${{ secrets.SPONSORLYTIX_PAT }}:x-oauth-basic@github.com/$CD_ORG/$CD_CHART_REPO.git
+
+      - name: Update helm value image tag
+        run: |
+          cd $CD_CHART_REPO/deployments/helm/$DEV_REPO
+          docker run --rm -v ${PWD}:/workdir mikefarah/yq:3.2.1 yq write --inplace --verbose $CD_MANIFEST_FILE_DEV $CD_IMAGE_TAG ${{ github.sha }}
+
+      - name: Commit files and Push change
+        run: |
+          cd $CD_CHART_REPO/
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git commit -am "bot(ci): Update $DEV_REPO images image.tag"
+          git push origin master

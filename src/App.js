@@ -27,11 +27,8 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/auth/check-auth",
-          { withCredentials: true }
-        );
-        setIsAuthenticated(response.data.message === "Authenticated");
+        const response = await axios.get('https://api.ashutosh.systems/auth/check-auth', { withCredentials: true });
+        setIsAuthenticated(response.data.message === 'Authenticated');
       } catch (error) {
         setIsAuthenticated(false);
       }
@@ -63,10 +60,10 @@ function App() {
     });
 
     try {
-      const response = await fetch("http://localhost:8080/process-image", {
+      const response = await fetch("https://api.ashutosh.systems/process-image", {
         method: "POST",
         body: formData,
-        credentials: "include", // Include cookies in the request
+        credentials: 'include', // Include cookies in the request
       });
       if (!response.ok) {
         throw new Error("Failed to process image. Please try again later.");
@@ -85,10 +82,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/login"
-          element={<Login setIsAuthenticated={setIsAuthenticated} />}
-        />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/image-upload"

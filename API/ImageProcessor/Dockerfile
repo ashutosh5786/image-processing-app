@@ -5,7 +5,7 @@ COPY --chown=gradle:gradle . /home/gradle/src
 RUN gradle build --no-daemon
 
 # Run stage
-FROM openjdk:21-jre-slim
+FROM openjdk:21
 EXPOSE 8080
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
